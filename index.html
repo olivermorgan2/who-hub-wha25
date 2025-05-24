@@ -28,7 +28,11 @@
   </style>
 </head>
 <body>
+  
   <h2 style="text-align: center">WHA78 WHO Hub Mentions - Highlighted Countries</h2>
+  <div style="text-align: center; padding: 8px 0 16px 0;">
+    <a href="member_state_analysis.html" target="_blank" style="font-size: 16px; color: #0056b3; text-decoration: underline;">View Full Member State Analysis</a>
+  </div>
   <div id="map"></div>
   <div class="tooltip" id="tooltip"></div>
 
@@ -157,56 +161,10 @@
     });
   </script>
 
-<h2 style="text-align: center; margin-top: 40px;">Member State Summary and Figure</h2>
-<div style="max-width: 960px; margin: 0 auto; padding: 20px;">
-  <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABUAAA..." alt="Figure 1: Lollipop Chart of Member State Mentions by Initiative" style="width:100%; max-width:960px; display: block; margin-bottom: 20px;" />
-  <p style="text-align: center; font-style: italic;">Figure 1: Lollipop Chart of Member State Mentions by Initiative</p>
 
-  <table class="table table-striped table-hover table-condensed" style="width:100%; border-collapse: collapse;">
-    <caption style="text-align: left; font-weight: bold; padding: 8px 0;">Table 1: Summary of Member State Mentions by Initiative</caption>
-    <thead>
-      <tr>
-        <th style="text-align:left; padding: 8px; border: 1px solid #ccc;">Initiative</th>
-        <th style="text-align:right; padding: 8px; border: 1px solid #ccc;">Count</th>
-        <th style="text-align:left; padding: 8px; border: 1px solid #ccc;">Countries</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td style="text-align:left; padding: 8px; border: 1px solid #ccc;">Surveillance</td>
-        <td style="text-align:right; padding: 8px; border: 1px solid #ccc;">61</td>
-        <td style="text-align:left; padding: 8px; border: 1px solid #ccc;">Saudi Arabia, Colombia, Botswana, Australia, Thailand, Norway, Panama, Angola, Bangladesh, Armenia, Sri Lanka, Namibia, Spain, Pakistan, Cambodia, Ghana, Eswatini, Belize, Paraguay, Bahamas, Oman, Dominican Republic, Brunei Darussalam, Burkina Faso, Zambia, Malawi, South Africa, Bolivia, Democratic Republic of Congo, Antigua and Barbuda, Ecuador, Liberia, Panama, Senegal, Haiti, Guinea, Algeria, Benin, Chad, Côte d’Ivoire, Djibouti, Ethiopia, Fiji, Georgia, Guatemala, Honduras, Iran, Jordan, Kazakhstan, Kyrgyzstan, Laos, Lesotho, Madagascar, Maldives, Mali, Moldova, Mongolia, Montenegro, Mozambique, Nepal, Nicaragua</td>
-      </tr>
-      <tr>
-        <td style="text-align:left; padding: 8px; border: 1px solid #ccc;">Collaborative Surveillance</td>
-        <td style="text-align:right; padding: 8px; border: 1px solid #ccc;">11</td>
-        <td style="text-align:left; padding: 8px; border: 1px solid #ccc;">China, Brazil, Kenya, United Kingdom, Singapore, Gambia, India, Jamaica, Vietnam, Japan, Luxembourg</td>
-      </tr>
-    </tbody>
-  </table>
+
+  
 </div>
-<h2 style="text-align: center; margin-top: 40px;">Detailed Member State Comments</h2>
-<div style="max-width: 960px; margin: 0 auto; padding: 20px;">
-  <table style="width: 100%; border-collapse: collapse;">
-    <thead>
-      <tr style="background-color: #f0f0f0;">
-        <th style="text-align: left; padding: 8px; border: 1px solid #ccc;">Country</th>
-        <th style="text-align: left; padding: 8px; border: 1px solid #ccc;">Comment</th>
-      </tr>
-    </thead>
-    <tbody id="comments-table-body"></tbody>
-  </table>
-</div>
-<script>
-  const commentsTable = document.getElementById("comments-table-body");
-  Object.entries(highlightedCountries).forEach(([country, comment]) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td style='padding: 8px; border: 1px solid #ccc;'>${country}</td>
-      <td style='padding: 8px; border: 1px solid #ccc;'>${comment}</td>
-    `;
-    commentsTable.appendChild(row);
-  });
-</script>
+
 </body>
 </html>
