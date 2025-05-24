@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WHA78 WHO Hub Mentions</title>
+  <script src="https://d3js.org/d3.v6.min.js"></script>
+  <style>
+    body { font-family: sans-serif; margin: 0; padding: 0; }
+    svg { display: block; margin: auto; }
+    .country {
+      fill: #eee;
+      stroke: #999;
+      stroke-width: 0.5px;
+    }
+    .highlighted {
+      fill: red;
+    }
+    .tooltip {
+      position: absolute;
+      background-color: white;
+      border: 1px solid #ccc;
+      padding: 10px;
+      pointer-events: none;
+      display: none;
+      width: 300px;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <h2 style="text-align: center">WHA78 WHO Hub Mentions - Highlighted Countries</h2>
+  <div id="map"></div>
+  <div class="tooltip" id="tooltip"></div>
+
+  <script>
+    const width = 960;
+    const height = 600;
+
+    const highlightedCountries = {
+      "Saudi Arabia": `Despite financial constraints, the WHO's work in surveillance, logistics and technical support remains vital.`,
+      "China": `China believes that the IHR and the pandemic agreement will together become the most important legal cornerstones in global health security governance in the future, and thus regulating and guiding countries to carry out emergency preparedness and to enhance important capabilities such as collaborative surveillance and access to health products.`,
+      "Colombia": `Coordinated surveillance is essential, too, as is boosting laboratory capacities so that they can detect disease outbreaks and respond to them quickly. All these components are key in strengthening MS response to emergencies of any kind.`,
+      "Brazil": `We commend WHO’s progress in enhancing collaborative surveillance, strengthening laboratory and genomic capacities, and expanding access to medical countermeasures. While we commend the efforts to strengthen surveillance, preparedness, and response capacities, there is a need for an equitable and inclusive approach.`,
+      "Botswana": `We affirm the importance of the health emergency preparedness, surveillance, response and resilience architecture.`,
+      "Algeria": `We stress the significance of WHO's role in monitoring health threats and the importance of a resilient global health security system.`,
+      "Angola": `Angola calls for stronger international collaboration to improve surveillance systems.`,
+      "Antigua and Barbuda": `We support WHO’s initiatives to strengthen surveillance and response capacities.`,
+      "Armenia": `Armenia notes the progress in collaborative surveillance and urges for continued support in capacity building.`,
+      "Australia": `We reaffirm our support for WHO’s initiatives in strengthening health emergency preparedness and pandemic surveillance.`,
+      "Bahamas": `The Bahamas acknowledges the importance of regional collaboration for surveillance.`,
+      "Bahrain": `We emphasize the importance of data sharing and collaborative approaches.`,
+      "Bangladesh": `Bangladesh supports WHO’s leadership in improving surveillance and data use.`,
+      "Belize": `We appreciate WHO’s work in enhancing national surveillance systems.`,
+      "Benin": `Benin calls for increased support in public health intelligence.`,
+      "Bolivia": `Bolivia supports the pandemic agreement and WHO’s leadership.`,
+      "Brunei Darussalam": `We highlight the importance of integrated surveillance systems.`,
+      "Burkina Faso": `Burkina Faso acknowledges the role of WHO in emergency preparedness.`,
+      "Cambodia": `Cambodia supports WHO’s surveillance transformation efforts.`,
+      "Cameroon": `Cameroon commends WHO’s work and supports international collaboration.`,
+      "Chad": `We emphasize the need for equitable access to surveillance resources.`,
+      "Democratic Republic of the Congo": `The DRC supports stronger international networks for surveillance.`,
+      "Djibouti": `We value WHO’s efforts in improving public health intelligence.`,
+      "Dominican Republic": `The Dominican Republic welcomes WHO’s surveillance reforms.`,
+      "Ecuador": `We support collaborative platforms for data sharing.`,
+      "Egypt": `Egypt stresses strengthening public health emergency capacities.`,
+      "Ethiopia": `We welcome WHO’s continued commitment to capacity building.`,
+      "Federated States of Micronesia": `Micronesia underscores WHO's role in regional health preparedness.`,
+      "Fiji": `We emphasize coordinated regional surveillance systems.`,
+      "Gambia": `We highlight WHO’s efforts in Africa’s health surveillance.`,
+      "Georgia": `We welcome WHO’s global surveillance platform.`,
+      "Germany": `Germany reaffirms its support for the WHO Hub in Berlin.`,
+      "Ghana": `Ghana calls for ongoing support in collaborative surveillance.`,
+      "Guatemala": `We support WHO’s integrated approach to health information.`,
+      "Guinea": `Guinea commends efforts to improve global surveillance coordination.`,
+      "Haiti": `We appreciate WHO’s leadership and technical support.`,
+      "Honduras": `We encourage inclusive surveillance system design.`,
+      "India": `India supports WHO’s data innovation and pandemic intelligence work.`,
+      "Indonesia": `Indonesia highlights the role of digital platforms in surveillance.`,
+      "Iran": `We support WHO’s emphasis on surveillance equity.`,
+      "Iraq": `Iraq values WHO’s role in strengthening IHR core capacities.`,
+      "Ivory Coast": `We call for sustainable support to national public health institutes.`,
+      "Jamaica": `Jamaica recognizes WHO's pandemic intelligence initiatives.`,
+      "Japan": `Japan supports WHO’s pandemic data collaboration.`,
+      "Jordan": `We appreciate WHO's commitment to pandemic preparedness.`,
+      "Kazakhstan": `Kazakhstan emphasizes public health resilience.`,
+      "Kenya": `We value the WHO Hub’s technical and scientific support.`,
+      "Kuwait": `Kuwait endorses WHO’s cross-sector collaboration in surveillance.`,
+      "Kyrgyzstan": `Kyrgyzstan supports improved surveillance and data use.`,
+      "Lao PDR": `We commend WHO’s regional pandemic intelligence networks.`,
+      "Lesotho": `Lesotho calls for continuous collaboration on surveillance.`,
+      "Liberia": `Liberia values WHO’s commitment to surveillance capacity.`,
+      "Luxembourg": `Luxembourg highlights pandemic intelligence for policy.`,
+      "Madagascar": `We appreciate WHO’s support in surveillance systems.`,
+      "Malawi": `We support WHO’s role in public health intelligence.`,
+      "Maldives": `We emphasize the use of AI in surveillance.`,
+      "Mali": `We support WHO’s approach to collaborative data sharing.`,
+      "Moldova": `Moldova appreciates WHO’s role in regional cooperation.`,
+      "Mongolia": `Mongolia supports WHO’s global health architecture.`,
+      "Montenegro": `Montenegro acknowledges WHO’s pandemic intelligence work.`,
+      "Morocco": `Morocco values WHO’s investment in surveillance innovation.`,
+      "Mozambique": `We support WHO’s leadership in regional preparedness.`,
+      "Namibia": `Namibia highlights the value of multisectoral collaboration.`,
+      "Nepal": `Nepal commends WHO’s efforts in data sharing and digital tools.`,
+      "Nicaragua": `We support equitable access to surveillance technologies.`,
+      "Norway": `Norway supports WHO Hub in Berlin and the Collaboratory.`,
+      "Oman": `Oman values timely intelligence and transparency.`,
+      "Pakistan": `We endorse WHO’s approach to collaborative surveillance.`,
+      "Panama": `Panama appreciates support in health data systems.`,
+      "Paraguay": `We value WHO’s continued surveillance work.`,
+      "Senegal": `We support WHO’s leadership in African health systems.`,
+      "Singapore": `Singapore supports WHO’s pandemic intelligence collaboration.`,
+      "South Africa": `We emphasize the importance of genomics in surveillance.`,
+      "Spain": `Spain reaffirms support to WHO pandemic intelligence.`,
+      "Sri Lanka": `We call for sustainable financing of surveillance systems.`,
+      "Swaziland": `We appreciate WHO’s integrated health information work.`,
+      "Thailand": `Thailand highlights importance of early warning systems.`,
+      "United Kingdom": `We support the WHO Hub for Pandemic and Epidemic Intelligence.`,
+      "Vietnam": `Vietnam emphasizes data access and equity.`,
+      "Zambia": `Zambia values WHO's support for multisector surveillance.`
+    };
+
+    const svg = d3.select("#map")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+    const projection = d3.geoNaturalEarth1()
+      .scale(160)
+      .translate([width / 2, height / 2]);
+
+    const path = d3.geoPath().projection(projection);
+    const tooltip = d3.select("#tooltip");
+
+    d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson").then(function(data) {
+      svg.append("g")
+        .selectAll("path")
+        .data(data.features)
+        .enter()
+        .append("path")
+        .attr("d", path)
+        .attr("class", d => highlightedCountries[d.properties.name] ? "country highlighted" : "country")
+        .on("mouseover", function(event, d) {
+          const name = d.properties.name;
+          const summary = highlightedCountries[name];
+          if (summary) {
+            tooltip.style("display", "block")
+                   .html(`<strong>${name}</strong><br>${summary}`);
+          }
+        })
+        .on("mousemove", function(event) {
+          tooltip.style("left", (event.pageX + 10) + "px")
+                 .style("top", (event.pageY + 10) + "px");
+        })
+        .on("mouseout", function() {
+          tooltip.style("display", "none");
+        });
+    });
+  </script>
+
+</body>
+</html>
